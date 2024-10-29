@@ -4,15 +4,170 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventario Nahel 2K24</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #fff;
+            background: linear-gradient(135deg, #000000, #1a1a1a 50%, #330000);
+            overflow: hidden;
+        }
+
+        .background-triangles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            opacity: 0.8;
+        }
+
+        .triangle {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            opacity: 0.5;
+            animation: float 5s ease-in-out infinite alternate;
+        }
+
+        @keyframes float {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-20px); }
+        }
+
+        .triangle.large { border-width: 200px 300px 200px 0; border-color: transparent #ff3333 transparent transparent; top: 20%; left: -10%; transform: rotate(45deg); animation-duration: 6s; }
+        .triangle.small { border-width: 100px 150px 100px 0; border-color: transparent #ff1a1a transparent transparent; top: 60%; left: 70%; transform: rotate(-30deg); animation-duration: 8s; }
+        .triangle.medium { border-width: 150px 250px 150px 0; border-color: transparent #cc0000 transparent transparent; top: 40%; left: 20%; transform: rotate(-20deg); animation-duration: 7s; }
+        .triangle.extra-large { border-width: 300px 400px 300px 0; border-color: transparent #e60000 transparent transparent; top: 10%; left: 80%; transform: rotate(-15deg); animation-duration: 10s; }
+        .triangle.extra-small { border-width: 70px 100px 70px 0; border-color: transparent #ff4d4d transparent transparent; top: 80%; left: 30%; transform: rotate(25deg); animation-duration: 9s; }
+
+        .container {
+            position: relative;
+            width: 320px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.8);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+            animation: containerShadow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes containerShadow {
+            from { box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4); }
+            to { box-shadow: 0px 4px 16px rgba(255, 0, 0, 0.6); }
+        }
+
+        h1 {
+            font-size: 24px;
+            text-align: center;
+            color: #e60000;
+            text-shadow: 0 0 5px #e60000, 0 0 10px #ff0000, 0 0 20px #ff0000;
+            animation: titleGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { text-shadow: 0 0 5px #e60000, 0 0 10px #ff0000; }
+            to { text-shadow: 0 0 10px #ff3333, 0 0 20px #ff3333; }
+        }
+
+        label, input, button {
+            width: 100%;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        input {
+            padding: 8px;
+            border: 1px solid #e60000;
+            border-radius: 4px;
+            background-color: #333;
+            color: #fff;
+            transition: background-color 0.3s ease;
+        }
+
+        input:focus {
+            background-color: #555;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #e60000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.3s ease;
+            box-shadow: 0px 4px 8px rgba(255, 0, 0, 0.4);
+        }
+
+        button:hover {
+            background-color: #b30000;
+            transform: scale(1.05);
+            box-shadow: 0px 6px 12px rgba(255, 0, 0, 0.6);
+        }
+
+        .result {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #e60000;
+            text-align: center;
+            color: #fff;
+        }
+
+        th {
+            background-color: rgba(230, 0, 0, 0.8);
+        }
+
+        td {
+            background-color: rgba(51, 0, 0, 0.7);
+        }
+
+        .result.fade-in {
+            animation: fadeResult 0.5s ease-in-out;
+        }
+
+        @keyframes fadeResult {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
 </head>
 <body>
 
-    <h1>Inventario Nahel 2K24</h1>
-    <label for="product-key">Clave del Producto:</label>
-    <input type="text" id="product-key" placeholder="Ingresa la clave del producto">
-    <button onclick="searchProduct()">Buscar Producto</button>
-    <button onclick="toggleInventory()">Inventario Completo</button>
-    <div id="result" class="result"></div>
+    <div class="background-triangles">
+        <div class="triangle large"></div>
+        <div class="triangle small"></div>
+        <div class="triangle medium"></div>
+        <div class="triangle extra-large"></div>
+        <div class="triangle extra-small"></div>
+    </div>
+
+    <div class="container">
+        <h1>Inventario Nahel 2K24</h1>
+        <label for="product-key">Clave del Producto:</label>
+        <input type="text" id="product-key" placeholder="Ingresa la clave del producto">
+        <button onclick="searchProduct()">Buscar Producto</button>
+        <button onclick="toggleInventory()">Inventario Completo</button>
+        <div id="result" class="result"></div>
+    </div>
 
     <script>
         const productos = [
@@ -26,15 +181,18 @@
         function searchProduct() {
             const clave = document.getElementById("product-key").value.trim().toUpperCase();
             const resultado = document.getElementById("result");
+            resultado.classList.remove("fade-in");
 
             const producto = productos.find(p => p.clave === clave);
             resultado.innerHTML = producto
                 ? `Nombre: ${producto.nombre} <br> Costo: $${producto.costo}`
                 : "Producto no encontrado";
+            resultado.classList.add("fade-in");
         }
 
         function toggleInventory() {
             const resultado = document.getElementById("result");
+            resultado.classList.remove("fade-in");
 
             if (isInventoryVisible) {
                 resultado.innerHTML = "";
@@ -60,10 +218,14 @@
                 });
 
                 tableHTML += `</table>`;
-                resultado.innerHTML = tableHTML;
+                resultado.innerHTML = `<strong>Inventario Completo:</strong><br>${tableHTML}`;
                 isInventoryVisible = true;
             }
+
+            resultado.classList.add("fade-in");
         }
     </script>
+
 </body>
 </html>
+
