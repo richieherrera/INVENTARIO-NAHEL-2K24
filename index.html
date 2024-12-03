@@ -118,35 +118,27 @@
             color: #fff;
         }
 
-        table {
-            width: 100%;
-            margin-top: 10px;
-            border-collapse: collapse;
-            background-color: rgba(255, 255, 255, 0.1);
+        /* Estilos para lista de sugerencias */
+        #suggestionsList {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            max-height: 150px;
+            overflow-y: auto;
+            background-color: #333;
+            border: 1px solid #e60000;
+            border-radius: 4px;
+            display: none;
         }
 
-        th, td {
+        #suggestionsList li {
             padding: 8px;
-            border: 1px solid #e60000;
-            text-align: center;
             color: #fff;
         }
 
-        th {
-            background-color: rgba(230, 0, 0, 0.8);
-        }
-
-        td {
-            background-color: rgba(51, 0, 0, 0.7);
-        }
-
-        .result.fade-in {
-            animation: fadeResult 0.5s ease-in-out;
-        }
-
-        @keyframes fadeResult {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        #suggestionsList li:hover {
+            background-color: #555;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -163,20 +155,55 @@
     <div class="container">
         <h1>Inventario Nahel 2K24</h1>
         <label for="product-key">Clave del Producto:</label>
-        <input type="text" id="product-key" placeholder="Ingresa la clave del producto">
+        <input type="text" id="product-key" placeholder="Ingresa la clave del producto" onkeyup="showSuggestions()">
+        <ul id="suggestionsList"></ul>
         <button onclick="searchProduct()">Buscar Producto</button>
-        <button onclick="toggleInventory()">Inventario Completo</button>
         <div id="result" class="result"></div>
     </div>
 
     <script>
         const productos = [
-            { clave: "BI045", nombre: "Bici Mercurio", costo: 3300 },
-            { clave: "LLAN015", nombre: "Llanta Rodada 15 Singla", costo: 115 },
-            { clave: "BAL807", nombre: "Balero con Eje Pequeño", costo: 15 },
+           { clave: "TA220", nombre: "TAZA TELESCOPIO AMERICANA", costo: 0 },
+            { clave: "TA230", nombre: "TAZA TELESCOPIO ESTANDAR", costo: 0 },
+            { clave: "RU035", nombre: "RUEDA LATERAL 12-20", costo: 0 },
+            { clave: "RU030", nombre: "RUEDA LATERAL 12-20 NAHEL", costo: 0 },
+            { clave: "RU007", nombre: "RUEDA LATERAL 16 NAHEL", costo: 0 },
+            { clave: "RU002-4", nombre: "RUEDA LATERAL 12 NAHEL", costo: 0 },
+            { clave: "CA398", nombre: "CAMARA 12 BICI", costo: 0 },
+            { clave: "CA399", nombre: "CAMARA 16 BICI", costo: 0 },
+            { clave: "CA400", nombre: "CAMARA 20 BICI", costo: 0 },
+            { clave: "CA409", nombre: "CAMARA 24 BICI", costo: 0 },
+            { clave: "CA410", nombre: "CAMARA 26 BICI", costo: 0 },
+            { clave: "CA470", nombre: "CAMARA 18 BICI", costo: 0 },
+            { clave: "CA700", nombre: "CAMARA 29 BICI", costo: 0 },
+            { clave: "CA723", nombre: "CAMARA 17 MOTO", costo: 0 },
+            { clave: "CA725", nombre: "CAMARA 18 MOTO", costo: 0 },
+            { clave: "PA345", nombre: "CAJA PARCHE 24pzs", costo: 0 },
+            { clave: "PA348", nombre: "CAJA PARCHE 48pzs", costo: 0 },
+            { clave: "AS829", nombre: "ASIENTO COLORES CHICHO", costo: 0 },
+            { clave: "AS155", nombre: "ASIENTO COLORES GRANDE", costo: 0 },
+            { clave: "DE145", nombre: "DESVIADOR CON PATA", costo: 0 },
+            { clave: "DE158", nombre: "DESVIADOR SIN PATA", costo: 0 },
+            { clave: "PI120", nombre: "PIÑON 7 PASOS", costo: 0 },
+            { clave: "PI115", nombre: "PIÑON 6 PASOS", costo: 0 },
+            { clave: "PI030", nombre: "PIÑON 18 DIENTES", costo: 0 },
+            { clave: "PI018", nombre: "PIÑON 16 DIENTES", costo: 0 },
+            { clave: "PE174", nombre: "PEDAL 1/2", costo: 0 },
+            { clave: "PE215", nombre: "PEDAL 9/16", costo: 0 },
+            { clave: "LL435", nombre: "LLANTA 26 REFORZADA", costo: 0 },
+            { clave: "LL421", nombre: "LLANTA 26 ECONOMICA", costo: 0 },
+            { clave: "LL288E", nombre: "LLANTA 24", costo: 0 },
+            { clave: "LL209", nombre: "LLANTA 20 MONTAÑA", costo: 0 },
+            { clave: "LL180", nombre: "LLANTA 20 GALACTICA", costo: 0 },
+            { clave: "LL070", nombre: "LLANTA 16", costo: 0 },
+            { clave: "LL002-6H", nombre: "LLANTA 12", costo: 0 },
+            { clave: "CE049", nombre: "CEMENTOS", costo: 0 },
+            { clave: "BO090", nombre: "BOTE PARCHE", costo: 0 },
+            { clave: "BO075", nombre: "BOTE PARCHE", costo: 0 },
+            { clave: "BO012-3", nombre: "BOMBA CHICA", costo: 0 },
+            { clave: "BO012-5", nombre: "BOMBA MEDIANA", costo: 0 },
+            { clave: "BO012-7", nombre: "BOMBA GRANDE", costo: 0 },
         ];
-
-        let isInventoryVisible = false;
 
         function searchProduct() {
             const clave = document.getElementById("product-key").value.trim().toUpperCase();
@@ -190,42 +217,37 @@
             resultado.classList.add("fade-in");
         }
 
-        function toggleInventory() {
-            const resultado = document.getElementById("result");
-            resultado.classList.remove("fade-in");
+        function showSuggestions() {
+            const clave = document.getElementById("product-key").value.trim().toUpperCase();
+            const suggestionsList = document.getElementById("suggestionsList");
+            suggestionsList.innerHTML = "";
 
-            if (isInventoryVisible) {
-                resultado.innerHTML = "";
-                isInventoryVisible = false;
-            } else {
-                let tableHTML = `
-                    <table>
-                        <tr>
-                            <th>Clave</th>
-                            <th>Producto</th>
-                            <th>Costo</th>
-                        </tr>
-                `;
-
-                productos.forEach(p => {
-                    tableHTML += `
-                        <tr>
-                            <td>${p.clave}</td>
-                            <td>${p.nombre}</td>
-                            <td>$${p.costo}</td>
-                        </tr>
-                    `;
-                });
-
-                tableHTML += `</table>`;
-                resultado.innerHTML = `<strong>Inventario Completo:</strong><br>${tableHTML}`;
-                isInventoryVisible = true;
+            if (clave.length === 0) {
+                suggestionsList.style.display = "none";
+                return;
             }
 
-            resultado.classList.add("fade-in");
+            const suggestions = productos.filter(producto =>
+                producto.clave.startsWith(clave) || producto.nombre.toUpperCase().startsWith(clave)
+            );
+
+            if (suggestions.length > 0) {
+                suggestionsList.style.display = "block";
+                suggestions.forEach(producto => {
+                    const suggestionItem = document.createElement("li");
+                    suggestionItem.textContent = `${producto.clave} - ${producto.nombre}`;
+                    suggestionItem.onclick = () => {
+                        document.getElementById("product-key").value = producto.clave;
+                        suggestionsList.innerHTML = "";
+                        searchProduct();
+                    };
+                    suggestionsList.appendChild(suggestionItem);
+                });
+            } else {
+                suggestionsList.style.display = "none";
+            }
         }
     </script>
 
 </body>
 </html>
-
