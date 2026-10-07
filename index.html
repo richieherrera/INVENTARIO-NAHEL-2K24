@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Inventario Nahel </title>
+<title>Inventario Nahel 2K24</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -162,11 +162,46 @@ button.small { width: auto; margin: 14px 0 0; padding: 8px 14px; font-size: 13px
 .form .msg { min-height: 18px; margin: 0 0 10px; font-size: 13px; color: var(--accent-dark); }
 .card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 .card-actions button.small { margin: 0; }
+
+body { background: radial-gradient(ellipse at 12% 8%, var(--accent-soft), transparent 45%), var(--bg); }
+.container { position: relative; z-index: 1; }
+.bg { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; color: var(--accent); }
+.bg-dots { opacity: .10; }
+.bg-wheel { position: absolute; color: var(--accent); overflow: visible; }
+.bg-wheel.w1 { width: 520px; height: 520px; right: -170px; bottom: -190px; opacity: .10; }
+.bg-wheel.w2 { width: 260px; height: 260px; left: -90px; top: -70px; opacity: .08; }
+@media (max-width: 600px) {
+    .bg-wheel.w1 { width: 360px; height: 360px; right: -140px; bottom: -120px; }
+    .bg-wheel.w2 { width: 180px; height: 180px; left: -70px; top: -50px; }
+}
+button.danger { color: var(--muted); }
+button.danger:hover { color: #fff; background: var(--accent); border-color: var(--accent); }
+.confirm { margin-top: 14px; font-size: 14px; }
+.confirm p { margin: 0 0 10px; }
+.confirm .card-actions { margin-top: 0; }
 @keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
 </head>
 <body>
+<svg class="bg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <defs>
+        <symbol id="wheel" viewBox="0 0 400 400">
+            <g fill="none" stroke="currentColor">
+                <circle cx="200" cy="200" r="190" stroke-width="7"/>
+                <circle cx="200" cy="200" r="170" stroke-width="1.5"/>
+                <circle cx="200" cy="200" r="16" stroke-width="3"/>
+                <g stroke-width="1.2"><line x1="218.0" y1="200.0" x2="370.0" y2="200.0"/><line x1="216.7" y1="206.7" x2="357.6" y2="263.7"/><line x1="212.9" y1="212.5" x2="322.3" y2="318.1"/><line x1="207.3" y1="216.4" x2="269.1" y2="355.3"/><line x1="200.6" y1="218.0" x2="205.9" y2="369.9"/><line x1="193.8" y1="216.9" x2="141.9" y2="359.7"/><line x1="188.0" y1="213.4" x2="86.2" y2="326.3"/><line x1="183.8" y1="207.9" x2="47.2" y2="274.5"/><line x1="182.0" y1="201.3" x2="30.4" y2="211.9"/><line x1="182.9" y1="194.4" x2="38.3" y2="147.5"/><line x1="186.2" y1="188.4" x2="69.8" y2="90.7"/><line x1="191.5" y1="184.1" x2="120.2" y2="49.9"/><line x1="198.1" y1="182.1" x2="182.2" y2="30.9"/><line x1="205.0" y1="182.7" x2="246.9" y2="36.6"/><line x1="211.1" y1="185.8" x2="304.7" y2="66.0"/><line x1="215.6" y1="191.0" x2="347.2" y2="115.0"/><line x1="217.8" y1="197.5" x2="368.3" y2="176.3"/></g>
+            </g>
+        </symbol>
+        <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.2" fill="currentColor"/>
+        </pattern>
+    </defs>
+    <rect class="bg-dots" width="100%" height="100%" fill="url(#dots)"/>
+    <svg class="bg-wheel w1" viewBox="0 0 400 400"><use href="#wheel"/></svg>
+    <svg class="bg-wheel w2" viewBox="0 0 400 400"><use href="#wheel"/></svg>
+</svg>
 
 <main class="container">
     <h1>Inventario Nahel 2K24</h1>
@@ -264,7 +299,7 @@ const productos = [
 const STORAGE_KEY = "nahel-productos";
 try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (Array.isArray(saved) && saved.length) productos.splice(0, productos.length, ...saved);
+    if (Array.isArray(saved)) productos.splice(0, productos.length, ...saved);
 } catch (e) {}
 function persist() {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(productos)); } catch (e) {}
@@ -296,6 +331,7 @@ function searchProduct() {
                <div class="card-actions">
                    <button class="ghost small" onclick="openForm('${esc(producto.clave)}')">Modificar</button>
                    <button class="ghost small" onclick="goHome()">Volver al inicio</button>
+                   <button class="ghost small danger" onclick="askDelete('${esc(producto.clave)}')">Eliminar</button>
                </div>
            </div>`
         : `<div class="card error">No encontramos "${esc(clave)}". Revisa la clave o agrégala como producto nuevo.</div>`;
@@ -318,6 +354,27 @@ function showSuggestions() {
         list.appendChild(li);
     });
     list.style.display = "block";
+}
+
+function askDelete(clave) {
+    const actions = resultado.querySelector(".card-actions");
+    actions.outerHTML = `<div class="confirm">
+        <p>¿Eliminar este producto? No se puede deshacer.</p>
+        <div class="card-actions">
+            <button class="small" onclick="deleteProduct('${esc(clave)}')">Sí, eliminar</button>
+            <button class="ghost small" onclick="searchProduct()">Cancelar</button>
+        </div>
+    </div>`;
+}
+
+function deleteProduct(clave) {
+    const i = productos.findIndex(p => p.clave === clave);
+    if (i === -1) return;
+    productos.splice(i, 1);
+    persist();
+    input.value = "";
+    list.style.display = "none";
+    resultado.innerHTML = `<div class="card error">Se eliminó ${esc(clave)}.</div>`;
 }
 
 function goHome() {
